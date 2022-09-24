@@ -4,38 +4,20 @@
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 
 async function deployDiamond () {
-  const accounts = await ethers.getSigners()
-  const contractOwner = accounts[0]
-
-  // deploy DiamondCutFacet
-  const DiamondCutFacet = await ethers.getContractFactory('DiamondCutFacet')
-  const diamondCutFacet = await DiamondCutFacet.deploy()
-  await diamondCutFacet.deployed()
-  console.log('DiamondCutFacet deployed:', diamondCutFacet.address)
-
-  // deploy Diamond
-  const Diamond = await ethers.getContractFactory('Diamond')
-  const diamond = await Diamond.deploy(contractOwner.address, diamondCutFacet.address, "Me Uche Adams", "MUA", 18, 1000000)
-  await diamond.deployed()
-  console.log('Diamond deployed:', diamond.address)
+  
 
   // deploy DiamondInit
   // DiamondInit provides a function that is called when the diamond is upgraded to initialize state variables
   // Read about how the diamondCut function works here: https://eips.ethereum.org/EIPS/eip-2535#addingreplacingremoving-functions
-  const DiamondInit = await ethers.getContractFactory('DiamondInit')
-  const diamondInit = await DiamondInit.deploy()
-  await diamondInit.deployed()
-  console.log('DiamondInit deployed:', diamondInit.address)
+  const diamondInit = await ethers.getContractAt('DiamondInit', '0xC0Efc158722B88F80c3Cc0b47aF86F67f9786B67')
+  
 
   // deploy facets
   console.log('')
   console.log('Deploying facets')
-  const FacetNames = [
-    'DiamondLoupeFacet',
-    'OwnershipFacet',
-    'ERC20Facet'
-  ]
+  const FacetNames = ['ERC20WithdrawFacet']
   const cut = []
+
   for (const FacetName of FacetNames) {
     const Facet = await ethers.getContractFactory(FacetName)
     const facet = await Facet.deploy()
@@ -51,14 +33,18 @@ async function deployDiamond () {
   // upgrade diamond with facets
   console.log('')
   console.log('Diamond Cut:', cut)
-  const diamondCut = await ethers.getContractAt('IDiamondCut', diamond.address)
+
+  const diamondCut = await ethers.getContractAt('IDiamondCut', '0xc3c7B1fCe0C5D9E6D8321f3491536995868b7b3b')
   let tx
   let receipt
+
   // call to init function
   let functionCall = diamondInit.interface.encodeFunctionData('init')
-  tx = await diamondCut.diamondCut(cut, diamondInit.address, functionCall)
+  tx = await diamondCut.diamondCut(cut, '0xC0Efc158722B88F80c3Cc0b47aF86F67f9786B67', functionCall)
   console.log('Diamond cut tx: ', tx.hash)
+
   receipt = await tx.wait()
+
   if (!receipt.status) {
     throw Error(`Diamond upgrade failed: ${tx.hash}`)
   }
@@ -66,7 +52,7 @@ async function deployDiamond () {
   // return diamond.address
 
 
-  const token = await ethers.getContractAt("ERC20Facet", diamond.address);
+  const token = await ethers.getContractAt("ERC20Facet", '0xc3c7B1fCe0C5D9E6D8321f3491536995868b7b3b');
   const name = await token.name();
 
   // await token.mint(contractOwner.address, 10000);
