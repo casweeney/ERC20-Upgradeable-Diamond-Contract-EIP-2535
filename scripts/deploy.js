@@ -14,10 +14,10 @@ async function deployDiamond () {
   console.log('DiamondCutFacet deployed:', diamondCutFacet.address)
 
   // deploy Diamond
-  const Diamond = await ethers.getContractFactory('Diamond')
-  const diamond = await Diamond.deploy(contractOwner.address, diamondCutFacet.address, "Me Uche Adams", "MUA", 18, 1000000)
-  await diamond.deployed()
-  console.log('Diamond deployed:', diamond.address)
+  // const Diamond = await ethers.getContractFactory('Diamond')
+  // const diamond = await Diamond.deploy(contractOwner.address, diamondCutFacet.address, "Me Uche Adams", "MUA", 18, 1000000)
+  // await diamond.deployed()
+  // console.log('Diamond deployed:', diamond.address)
 
   // deploy DiamondInit
   // DiamondInit provides a function that is called when the diamond is upgraded to initialize state variables
@@ -47,6 +47,13 @@ async function deployDiamond () {
       functionSelectors: getSelectors(facet)
     })
   }
+
+
+  // deploy Diamond and Mint using delegatecall in the Diamond.sol constructor
+  const Diamond = await ethers.getContractFactory('Diamond')
+  const diamond = await Diamond.deploy(contractOwner.address, diamondCutFacet.address, "Black Adams Cass", "BAC", 18, 1000000, cut[2].facetAddress, "0x40c10f19000000000000000000000000617cd3db0cbf26f323d5b72975c5311343e0911500000000000000000000000000000000000000000000000000000000000f4240")
+  await diamond.deployed()
+  console.log('Diamond deployed:', diamond.address)
 
   // upgrade diamond with facets
   console.log('')

@@ -7,3 +7,13 @@ DiamondLoupeFacet deployed: 0xC24aDf0c32255FeA4C3bE2F6605aa49BB6AD913C
 OwnershipFacet deployed: 0x084860873243d14d2a61B33b644d84DE14dCA923
 ERC20Facet deployed: 0x8CA9c3721f4461C6bC3d55cBC7eD3A098C3D7ba1
 
+
+//// Deployement and minting using low delegatecall in the diamond constructor
+DiamondCutFacet deployed: 0x84997F9E9810F6ac7B07582D09b84CB8Ce0cC628
+DiamondInit deployed: 0x36b4f428632DaC92220cA72d958deE7240141bb5
+
+Deploying facets
+DiamondLoupeFacet deployed: 0xd955b1232640ca3Ee41AcccB57f20f989fe7B1eF
+OwnershipFacet deployed: 0x2BAa2102100D85783d834e504cCCe120B01fF374
+ERC20Facet deployed: 0x5A27857A57bBC5082C0AB783fa39e82821ffFEbF
+Diamond deployed: 0xB0497e4FB69a3ded91Ba2096BaF036B71AC7E4Cc
